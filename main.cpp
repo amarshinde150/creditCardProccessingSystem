@@ -8,6 +8,7 @@ class Card{
     string cvv;
     string pin;
     public:
+
         void setCardDetails(string cardNumber,int month,int year,string cvv,string pin){
             this->cardNumber = cardNumber;
             this->m = month;
@@ -53,12 +54,15 @@ class Card{
                 if(cvv.size()!=3){
                     cout<<"Wrong cvv number"<<endl;
                 }
-
+                return true;
             }
             else{
                 cout<<"Wrong date"<<endl;
                 return false;
             }
+        }
+        string getPin(){
+            return pin;
         }
 };
 class Bank{
@@ -99,13 +103,13 @@ class CardReader:public Bank{
             cin>>cvv;
             myCard->setCardDetails(cn,m,y,cvv,"5455");
         }
-        bool validate(){
-            Card *myCard = new Card();
-            string testCardNumber;
-            int tm;
-            int ty;
-            string testCvv;
-            myCard->getCardDetails(testCardNumber,tm,ty,testCvv);
+        bool validate(Card *myCard){
+//            Card *tCard = new Card();
+//            string testCardNumber;
+//            int tm;
+//            int ty;
+//            string testCvv;
+//            myCard->getCardDetails(testCardNumber,tm,ty,testCvv);
             int mm,yy;
             this->getValidDate(mm,yy);
             myCard->validateCard(mm,yy);
@@ -140,7 +144,7 @@ class ShopKeeper{
          void getCard(Card *myCard){
              CardReader *cr = new CardReader();
              cr->read(myCard);
-             if(cr->validate() == false){
+             if(cr->validate(myCard) == false){
                  cout<<"wrong details"<<endl;
              }
              else{
@@ -184,7 +188,7 @@ class Customer:public CardReader {
         bool login(){
             cout<<"Enter pin:";
             cin>>pin;
-            while(pin != this->pin){
+            while(pin != myCard->getPin()){
                 cout<<"Incorrect pin";
                 return false;
             }
@@ -195,7 +199,7 @@ class Customer:public CardReader {
              ShopKeeper *sk = new ShopKeeper;
              sk->getCard(myCard);
             if(this->login()){
-                cout<<"Amount paid";
+                cout<<"Amount "<<cart->getAmount()<<" paid";
             }
             else{
                 this->swipeCard();
